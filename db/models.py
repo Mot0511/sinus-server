@@ -1,19 +1,10 @@
-from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTableUUID
-from sqlalchemy import Boolean, Column, Integer, String, Table, Text, MetaData
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, MetaData
 from sqlalchemy.orm import DeclarativeBase, Mapped
 
 metadata = MetaData()
 
 class Base(DeclarativeBase):
-    n: Mapped[int] = Column(Integer, autoincrement=True, unique=True)
-
-class User(SQLAlchemyBaseUserTableUUID, Base):
-    __tablename__ = 'users'
-
-    username: str = Column(String(), unique=True)
-    name: str = Column(String())
-    description: str = Column(Text())
+    pass
 
 # user = Table(
 #     'users',

@@ -1,9 +1,10 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Form, UploadFile
 from fastapi_users import FastAPIUsers
-from db.auth.auth import auth_backend
-from db.auth.manager import get_user_manager
-from db.auth.auth import auth_backend
-from db.auth.schemas import UserCreate, UserRead, UserUpdate
+from auth.auth import auth_backend
+from auth.manager import get_user_manager
+from auth.auth import auth_backend
+from auth.schemas import UserCreate, UserRead, UserUpdate
+from fastapi.responses import FileResponse
 
 auth_router = APIRouter(prefix='/auth')
 
@@ -11,6 +12,17 @@ fastapi_users = FastAPIUsers(
     get_user_manager,
     [auth_backend]
 )
+
+@auth_router.get('/getAvatar/{id}')
+def getAvatar(id: str):
+    return FileResponse(f'storage/avatars/{id}.png')
+
+@auth_router.post('/setAvatar')
+def setAvatar(avatar: UploadFile, id: str = Form()):
+    print(avatar)
+    print(id)
+    with open(f'storage/avatars/{id}.png', 'wb') as file:
+        file.write(avatar.file.read())
 
 auth_router.include_router(
     fastapi_users.get_auth_router(auth_backend),

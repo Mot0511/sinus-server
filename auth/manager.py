@@ -4,11 +4,11 @@ import uuid
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, UUIDIDMixin
 from db.db import get_user_db
-from db.models import User
+from auth.models import User
 from config import SECRET_JWT_WORD
 import json
 import smtplib
-
+import shutil
 from utils.get_email_template import get_email_template
 
 
@@ -17,11 +17,9 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     verification_token_secret = SECRET_JWT_WORD
 
     async def on_after_register(self, user: User, request: Request | None = None) -> None:
-        print(f'User {user.id} has registered')
+        shutil.copyfile('storage/avatars/default.png', f'storage/avatars/{user.id}.png')
     
     async def on_after_forgot_password(self, user: User, token: str, request: Request | None = None) -> None:
-        print()
-
         email = user.email
 
         service = email.split('@')[1].split('.')[0]
