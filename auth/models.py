@@ -9,3 +9,4 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
     username: str = Column(String(), unique=True)
     name: str = Column(String())
     description: str = Column(Text())
+    friends: str = Column(Text())

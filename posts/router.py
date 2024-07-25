@@ -27,6 +27,13 @@ async def addPost(image: UploadFile, user = Form(), text = Form(), session: Asyn
 
     return ''
 
+@posts_router.get('/getOne/{id}')
+async def getPost(id: int, session: AsyncSession = Depends(get_async_session)):
+    q = select(PostModel).where(PostModel.id == id)
+    data = await session.execute(q)
+    post = data.scalar()
+
+    return post
 
 @posts_router.get('/get/{userID}')
 async def getPosts(userID: str, session: AsyncSession = Depends(get_async_session)):
@@ -65,7 +72,7 @@ async def editPost(image: UploadFile, user = Form(), text = Form(), session: Asy
 @posts_router.delete('/delete/{id}')
 async def deletePost(id: int, session: AsyncSession = Depends(get_async_session)):
     q = delete(PostModel).where(PostModel.id == id)
-    session.execute(q)
+    await session.execute(q)
     await session.commit()
 
     return ''

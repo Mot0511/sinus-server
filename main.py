@@ -11,7 +11,7 @@ app = FastAPI(
 
 
 app.include_router(posts_router, tags=['Posts'])
-app.include_router(auth_router)
+app.include_router(auth_router, tags=['Authentification'])
 
 @app.get('/')
 def start():
