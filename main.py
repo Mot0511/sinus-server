@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from auth.router import auth_router
 from posts.router import posts_router
+from messages.router import messages_router
 from starlette.middleware.cors import CORSMiddleware
 
 # Инициализация приложения
@@ -12,6 +13,7 @@ app = FastAPI(
 
 app.include_router(posts_router, tags=['Posts'])
 app.include_router(auth_router, tags=['Authentification'])
+app.include_router(messages_router, tags=['Messages'])
 
 @app.get('/')
 def start():

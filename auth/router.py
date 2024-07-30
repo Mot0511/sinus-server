@@ -9,7 +9,7 @@ from db.db import get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update
 from auth.models import User
-from auth.schemas import FriendsAction
+from schemas import UsersPair
 import json
 
 
@@ -21,7 +21,7 @@ fastapi_users = FastAPIUsers(
 )
 
 @auth_router.post('/friends/{action}')
-async def friendsAction(ids: FriendsAction, action: str, session: AsyncSession = Depends(get_async_session)):
+async def friendsAction(ids: UsersPair, action: str, session: AsyncSession = Depends(get_async_session)):
     q = select(User.friends).where(User.id == ids.user1)
     data = await session.execute(q)
     friends = json.loads(data.scalar())
