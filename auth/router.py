@@ -69,6 +69,14 @@ async def getUsers(session: AsyncSession = Depends(get_async_session)):
     
     return users
 
+@auth_router.get('/getUser/{id}')
+async def getUser(id: str, session: AsyncSession = Depends(get_async_session)):
+    q = select(User).where(User.id == id)
+    data = await session.execute(q)
+    user = data.scalar()
+
+    return user
+
 auth_router.include_router(
     fastapi_users.get_auth_router(auth_backend),
     prefix='',
