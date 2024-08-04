@@ -10,6 +10,7 @@ import random
 
 posts_router = APIRouter(prefix='/posts')
 
+# Need to auth
 @posts_router.post('/add')
 async def addPost(image: UploadFile, user = Form(), text = Form(), session: AsyncSession = Depends(get_async_session)):
     id = random.randint(1, 1000000)
@@ -26,6 +27,7 @@ async def addPost(image: UploadFile, user = Form(), text = Form(), session: Asyn
         file.write(image.file.read())
 
     return ''
+
 
 @posts_router.get('/getOne/{id}')
 async def getPost(id: int, session: AsyncSession = Depends(get_async_session)):
@@ -55,6 +57,7 @@ async def getAllPosts(session: AsyncSession = Depends(get_async_session)):
 async def getPostImage(id: str):
     return FileResponse(path=f'storage/posts/{id}.png')
 
+# Need to auth
 @posts_router.put('/edit/{id}')
 async def editPost(image: UploadFile, user = Form(), text = Form(), session: AsyncSession = Depends(get_async_session)):
     
@@ -69,6 +72,7 @@ async def editPost(image: UploadFile, user = Form(), text = Form(), session: Asy
 
     return ''
 
+# Need to auth
 @posts_router.delete('/delete/{id}')
 async def deletePost(id: int, session: AsyncSession = Depends(get_async_session)):
     q = delete(PostModel).where(PostModel.id == id)

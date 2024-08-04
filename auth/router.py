@@ -1,4 +1,6 @@
+from os import access
 from fastapi import APIRouter, Form, UploadFile, Depends
+import fastapi_users
 from fastapi_users import FastAPIUsers
 from auth.auth import auth_backend
 from auth.manager import get_user_manager
@@ -20,20 +22,24 @@ fastapi_users = FastAPIUsers(
     [auth_backend]
 )
 
-@auth_router.post('/friends/{action}')
-async def friendsAction(ids: UsersPair, action: str, session: AsyncSession = Depends(get_async_session)):
-    q = select(User.friends).where(User.id == ids.user1)
+current_user = fastapi_users.current_user()
+
+# Need to auth
+@auth_router.post('/friends/{action}/{id}')
+async def friendsAction(id: str, action: str, session: AsyncSession = Depends(get_async_session), user: User = Depends(current_user)):
+    q = select(User.friends).where(User.id == user.id)
     data = await session.execute(q)
     friends = json.loads(data.scalar())
     if action == 'add':
-        friends.append(ids.user2)
+        friends.append(id)
     elif action == 'remove':
-        friends.remove(ids.user2)
-    q = update(User).where(User.id == ids.user1).values(
+        friends.remove(id)
+    q = update(User).where(User.id == user.id).values(
         friends = json.dumps(friends)
     )
     await session.execute(q)
     await session.commit()
+
 
 @auth_router.get('/getFriends/{id}')
 async def getFriends(id: str, session: AsyncSession = Depends(get_async_session)):
@@ -54,6 +60,7 @@ async def getFriends(id: str, session: AsyncSession = Depends(get_async_session)
 def getAvatar(id: str):
     return FileResponse(f'storage/avatars/{id}.png')
 
+# Need to auth
 @auth_router.post('/setAvatar')
 def setAvatar(avatar: UploadFile, id: str = Form()):
     print(avatar)

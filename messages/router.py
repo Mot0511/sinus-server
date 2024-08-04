@@ -16,6 +16,7 @@ from messages.ws_manager import manager
 
 messages_router = APIRouter(prefix='/messages')
 
+# Need to auth
 @messages_router.websocket('/connect/{username}/{chat_id}')
 async def connect(websocket: WebSocket, chat_id: int, username: str, session: AsyncSession = Depends(get_async_session)):
     await manager.broadcast(get_broadcast_message('in_online', username), chat_id)
@@ -64,6 +65,7 @@ async def connect(websocket: WebSocket, chat_id: int, username: str, session: As
         manager.disconnect(websocket, chat_id)
         await manager.broadcast(get_broadcast_message('in_offline', username), chat_id)
 
+# Need to auth
 @messages_router.get('/get/{chat_id}')
 async def getMessages(chat_id: int, session: AsyncSession = Depends(get_async_session)):
     q = select(MessageModel).where(MessageModel.chat == chat_id)
@@ -80,6 +82,7 @@ async def getMessages(chat_id: int, session: AsyncSession = Depends(get_async_se
 
     return new_messages
 
+# Need to auth
 @messages_router.get('/getChats/{user_id}')
 async def getChats(user_id: str, session: AsyncSession = Depends(get_async_session)):
     q = select(Chat).where(or_(Chat.user1 == user_id, Chat.user2 == user_id))
@@ -105,6 +108,7 @@ async def getChats(user_id: str, session: AsyncSession = Depends(get_async_sessi
 
     return res
 
+# Need to auth
 @messages_router.get('/getChat/{chat_id}')
 async def getChat(chat_id: int, session: AsyncSession = Depends(get_async_session)):
     q = select(Chat).where(Chat.id == chat_id)
@@ -113,6 +117,7 @@ async def getChat(chat_id: int, session: AsyncSession = Depends(get_async_sessio
 
     return chat
 
+# Need to auth
 @messages_router.post('/addChat')
 async def addChat(users: UsersPair, session: AsyncSession = Depends(get_async_session)):
     
@@ -136,6 +141,7 @@ async def addChat(users: UsersPair, session: AsyncSession = Depends(get_async_se
 
     return chat_id
 
+# Need to auth
 @messages_router.post('/removeChat/{id}')
 async def removeChat(id: int, session: AsyncSession = Depends(get_async_session)):
     q_chat = delete(Chat).where(Chat.id == id)
