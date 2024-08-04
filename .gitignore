@@ -1,5 +1,5 @@
 .venv
-.env2
-db2.db
+.env
+db.db
 storage/posts/*.png
 storage/avatars/*.png
