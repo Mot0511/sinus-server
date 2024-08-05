@@ -29,7 +29,7 @@ app.add_middleware(
 )
 
 async def start():
-    await create_db()
+    # await create_db()
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
 
 if __name__ == "__main__":
