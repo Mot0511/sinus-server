@@ -2,10 +2,11 @@ from typing import AsyncGenerator
 from fastapi import Depends
 from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+from config import DB_URI
 from db.models import Base
 from auth.models import User
 
-engine = create_async_engine(f'sqlite+aiosqlite:///db.db')
+engine = create_async_engine(DB_URI)
 sessionmaker = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
 
 async def create_db():

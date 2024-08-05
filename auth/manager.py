@@ -5,7 +5,7 @@ from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, UUIDIDMixin
 from db.db import get_user_db
 from auth.models import User
-from config import SECRET_JWT_WORD
+from config import GMAIL_EMAIL, GMAIL_PASSWORD, SECRET_JWT_WORD, YANDEX_EMAIL, YANDEX_PASSWORD
 import json
 import smtplib
 import shutil
@@ -25,16 +25,14 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         service = email.split('@')[1].split('.')[0]
         
         if service == 'gmail':
-            print(1)
             s = smtplib.SMTP('smtp.gmail.com', 587)
             s.starttls()
-            s.login('suvorovmatvej9@gmail.com', 'pifu wamh agfx cxyw')
+            s.login(GMAIL_EMAIL, GMAIL_PASSWORD)
 
         elif service == 'yandex':
-            print(2)
             s = smtplib.SMTP('smtp.yandex.ru', 587)
             s.starttls()
-            s.login('Mat0511@yandex.ru', 'Y_browserplusmusic2')
+            s.login(YANDEX_EMAIL, YANDEX_PASSWORD)
     
         # message_template = get_email_template('reset_password')
         # message = message_template.substitude(TOKEN=token)
