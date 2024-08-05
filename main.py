@@ -9,7 +9,6 @@ from db.db import create_db
 from posts.router import posts_router
 from messages.router import messages_router
 from starlette.middleware.cors import CORSMiddleware
-from db.db import engine
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
