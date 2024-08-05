@@ -17,6 +17,7 @@ app = FastAPI(
 
 @app.on_event("startup")
 async def on_startup():
+    print('Hello')
     await create_db()
 
 app.include_router(posts_router, tags=['Posts'])
