@@ -10,12 +10,14 @@ from messages.router import messages_router
 from starlette.middleware.cors import CORSMiddleware
 from db.db import engine
 
-Base.metadata.create_all(bind=engine)
-
 # Инициализация приложения
 app = FastAPI(
     title='Sinus Backend'
 )
+
+@app.on_event("startup")
+async def on_startup():
+    await create_db()
 
 app.include_router(posts_router, tags=['Posts'])
 app.include_router(auth_router, tags=['Authentification'])
@@ -32,14 +34,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# async def start():
-#     await create_db()
-#     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
-
-# if __name__ == "__main__":
-#     asyncio.run(start())
-
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
