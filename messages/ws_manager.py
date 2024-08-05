@@ -1,6 +1,6 @@
 from fastapi import WebSocket
 
-from messages.models import Message
+from db.models import Message
 
 
 class WSManager:

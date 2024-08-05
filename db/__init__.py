@@ -1,3 +1,3 @@
-# from auth.models import User
-# from posts.models import Post
-# from messages.models import Chat, Message
+# from db.models import User
+# from db.models import Post
+# from db.models import Chat, Message

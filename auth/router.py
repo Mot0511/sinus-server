@@ -10,7 +10,7 @@ from fastapi.responses import FileResponse
 from db.db import get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update
-from auth.models import User
+from db.models import User
 from schemas import UsersPair
 import json
 

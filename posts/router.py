@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, UploadFile, Form, File, Request
 from fastapi.responses import FileResponse
 from fastapi.encoders import jsonable_encoder
 from posts.schemas import Post
-from posts.models import Post as PostModel
+from db.models import Post as PostModel
 from sqlalchemy import select, delete, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from db.db import get_async_session

@@ -4,7 +4,7 @@ import uuid
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, UUIDIDMixin
 from db.db import get_user_db
-from auth.models import User
+from db.models import User
 from config import GMAIL_EMAIL, GMAIL_PASSWORD, SECRET_JWT_WORD, YANDEX_EMAIL, YANDEX_PASSWORD
 import json
 import smtplib

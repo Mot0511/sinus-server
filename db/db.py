@@ -4,17 +4,17 @@ from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from config import DB_URI
 from db.models import Base
-from auth.models import User
+from db.models import User
 
 engine = create_async_engine(DB_URI)
 sessionmaker = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
 
 async def create_db():
-    async with engine.connect() as conn:
+    async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
 async def drop_db():
-    async with engine.connect() as conn:
+    async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
 
 

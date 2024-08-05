@@ -3,9 +3,9 @@ import random
 from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
 from sqlalchemy import and_, delete, or_, select
 from websockets import broadcast
-from auth.models import User
+from db.models import User
 from auth.router import getUser
-from messages.models import Chat, Message as MessageModel
+from db.models import Chat, Message as MessageModel
 from messages.schemas import Message
 from messages.utils import get_broadcast_message
 from messages.ws_manager import WSManager
