@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+import uvicorn
 from auth.router import auth_router
 from posts.router import posts_router
 from messages.router import messages_router
@@ -26,3 +27,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
