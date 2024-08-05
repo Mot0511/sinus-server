@@ -6,7 +6,7 @@ from config import DB_URI
 from db.models import Base
 from db.models import User
 
-engine = create_async_engine(DB_URI)
+engine = create_async_engine(DB_URI, echo=True)
 sessionmaker = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
 
 async def create_db():
