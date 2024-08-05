@@ -3,4 +3,3 @@
 db.db
 storage/posts/*.png
 storage/avatars/*.png
-migrations/versions/*
