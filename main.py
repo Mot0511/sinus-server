@@ -1,4 +1,5 @@
 import asyncio
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 import uvicorn
 from auth.router import auth_router
@@ -10,15 +11,17 @@ from messages.router import messages_router
 from starlette.middleware.cors import CORSMiddleware
 from db.db import engine
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    print('Lifespan')
+    await create_db()
+    yield
+
 # Инициализация приложения
 app = FastAPI(
-    title='Sinus Backend'
+    title='Sinus Backend',
+    lifespan=lifespan
 )
-
-@app.on_event("startup")
-async def on_startup():
-    print('Hello')
-    await create_db()
 
 app.include_router(posts_router, tags=['Posts'])
 app.include_router(auth_router, tags=['Authentification'])
