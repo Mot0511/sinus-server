@@ -2,6 +2,7 @@ import asyncio
 from fastapi import FastAPI
 import uvicorn
 from auth.router import auth_router
+from config import DB_URI
 from db.db import create_db
 from posts.router import posts_router
 from messages.router import messages_router
@@ -18,7 +19,8 @@ app.include_router(messages_router, tags=['Messages'])
 
 @app.get('/')
 def start():
-    return 'Server is working'
+    return DB_URI
+    # return 'Server is working'
 
 app.add_middleware(
     CORSMiddleware,
@@ -34,4 +36,3 @@ async def start():
 
 if __name__ == "__main__":
     asyncio.run(start())
-    
