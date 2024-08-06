@@ -36,7 +36,7 @@ async def create_db_route():
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=['http://localhost', 'https://sinus-client.vercel.app'],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
