@@ -30,6 +30,10 @@ app.include_router(messages_router, tags=['Messages'])
 def start():
     return 'Server is working'
 
+@app.get('/create_db')
+async def create_db_route():
+    await create_db()
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
