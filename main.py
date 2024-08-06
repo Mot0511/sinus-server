@@ -1,6 +1,7 @@
 import asyncio
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
 import uvicorn
 from auth.router import auth_router
 from config import DB_URI
@@ -9,6 +10,9 @@ from db.db import create_db
 from posts.router import posts_router
 from messages.router import messages_router
 from starlette.middleware.cors import CORSMiddleware
+import logging
+
+logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -34,6 +38,10 @@ def start():
 async def create_db_route():
     await create_db()
 
+@app.get('/getlogs')
+def get_logs():
+    return FileResponse('logs.txt')
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=['http://localhost:3000', 'https://pipeup.vercel.app'],
@@ -43,4 +51,5 @@ app.add_middleware(
 )
 
 if __name__ == "__main__":
+    logging.basicConfig(filename='logs.txt')
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
