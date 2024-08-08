@@ -6,7 +6,7 @@ import uvicorn
 from auth.router import auth_router
 from config import DB_URI
 from db.models import Base
-from db.db import create_db
+from db.db import create_db, drop_db
 from posts.router import posts_router
 from messages.router import messages_router
 from starlette.middleware.cors import CORSMiddleware
@@ -36,6 +36,10 @@ def start():
 @app.get('/create_db')
 async def create_db_route():
     await create_db()
+
+@app.get('/drop_db')
+async def create_db_route():
+    await drop_db()
 
 @app.get('/getlogs')
 def get_logs():
