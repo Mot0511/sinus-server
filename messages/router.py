@@ -1,6 +1,7 @@
 import json
 import random
 from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
+from auth.router import fastapi_users
 from sqlalchemy import and_, delete, or_, select
 from websockets import broadcast
 from db.models import User
@@ -15,6 +16,8 @@ from db.db import get_async_session
 from messages.ws_manager import manager
 
 messages_router = APIRouter(prefix='/messages')
+
+current_user = fastapi_users.current_user()
 
 # Need to auth
 @messages_router.websocket('/connect/{username}/{chat_id}')
@@ -83,15 +86,15 @@ async def getMessages(chat_id: int, session: AsyncSession = Depends(get_async_se
     return new_messages
 
 # Need to auth
-@messages_router.get('/getChats/{user_id}')
-async def getChats(user_id: str, session: AsyncSession = Depends(get_async_session)):
-    q = select(Chat).where(or_(Chat.user1 == user_id, Chat.user2 == user_id))
+@messages_router.get('/getChats/')
+async def getChats(session: AsyncSession = Depends(get_async_session), user: User = Depends(current_user)):
+    q = select(Chat).where(or_(Chat.user1 == str(user.id), Chat.user2 == str(user.id)))
     data = await session.execute(q)
     chats = data.scalars().all()
 
     users = []
     for chat in chats:
-        if chat.user1 == user_id:
+        if chat.user1 == str(user.id):
             q = select(User).where(User.id == chat.user2)
         else:
             q = select(User).where(User.id == chat.user1)
@@ -110,19 +113,19 @@ async def getChats(user_id: str, session: AsyncSession = Depends(get_async_sessi
 
 # Need to auth
 @messages_router.get('/getChat/{chat_id}')
-async def getChat(chat_id: int, session: AsyncSession = Depends(get_async_session)):
-    q = select(Chat).where(Chat.id == chat_id)
+async def getChat(chat_id: int, session: AsyncSession = Depends(get_async_session), user: User = Depends(current_user)):
+    q = select(Chat).where(and_(Chat.id == chat_id, or_(Chat.user1 == str(user.id), Chat.user2 == str(user.id))))
     data = await session.execute(q)
     chat = data.scalar()
 
     return chat
 
 # Need to auth
-@messages_router.post('/addChat')
-async def addChat(users: UsersPair, session: AsyncSession = Depends(get_async_session)):
+@messages_router.post('/addChat/{user_id}')
+async def addChat(user_id: str, session: AsyncSession = Depends(get_async_session), user: User = Depends(current_user)):
     
     async def get_chat_id():
-        q = select(Chat.id).where(or_(and_(Chat.user1 == users.user1, Chat.user2 == users.user2), and_(Chat.user1 == users.user2, Chat.user2 == users.user1)))
+        q = select(Chat.id).where(or_(and_(Chat.user1 == str(user.id), Chat.user2 == user_id), and_(Chat.user1 == user_id, Chat.user2 == str(user.id))))
         data = await session.execute(q)
         return data.scalar()
 
@@ -130,8 +133,8 @@ async def addChat(users: UsersPair, session: AsyncSession = Depends(get_async_se
 
     if not chat_id:
         obj = Chat(
-            user1 = users.user1,
-            user2 = users.user2
+            user1 = str(user.id),
+            user2 = user_id
         )
         session.add(obj)
         await session.commit()
@@ -143,8 +146,8 @@ async def addChat(users: UsersPair, session: AsyncSession = Depends(get_async_se
 
 # Need to auth
 @messages_router.post('/removeChat/{id}')
-async def removeChat(id: int, session: AsyncSession = Depends(get_async_session)):
-    q_chat = delete(Chat).where(Chat.id == id)
+async def removeChat(id: int, session: AsyncSession = Depends(get_async_session), user: User = Depends(current_user)):
+    q_chat = delete(Chat).where(and_(Chat.id == id, or_(Chat.user1 == str(user.id), Chat.user2 == str(user.id))))
     q_messages = delete(MessageModel).where(MessageModel.chat == id)
 
     await session.execute(q_chat)

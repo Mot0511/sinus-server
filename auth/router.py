@@ -62,10 +62,8 @@ def getAvatar(id: str):
 
 # Need to auth
 @auth_router.post('/setAvatar')
-def setAvatar(avatar: UploadFile, id: str = Form()):
-    print(avatar)
-    print(id)
-    with open(f'storage/avatars/{id}.png', 'wb') as file:
+def setAvatar(avatar: UploadFile, user: User = Depends(current_user)):
+    with open(f'storage/avatars/{user.id}.png', 'wb') as file:
         file.write(avatar.file.read())
 
 @auth_router.get('/getUsers')
