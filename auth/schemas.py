@@ -1,6 +1,7 @@
 from typing import Optional
 import uuid
 from fastapi_users import schemas
+from pydantic import BaseModel
 
 class UserRead(schemas.BaseUser[uuid.UUID]):
     username: str
@@ -19,4 +20,3 @@ class UserUpdate(schemas.BaseUserUpdate):
     name: Optional[str] = None
     description: Optional[str] = None
     friends: Optional[str] = None
-
