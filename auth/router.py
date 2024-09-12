@@ -14,7 +14,6 @@ from db.models import User
 from schemas import UsersPair
 import json
 
-
 auth_router = APIRouter(prefix='/auth')
 
 fastapi_users = FastAPIUsers(
@@ -24,7 +23,7 @@ fastapi_users = FastAPIUsers(
 
 current_user = fastapi_users.current_user()
 
-# Need to auth
+
 @auth_router.post('/friends/{action}/{id}')
 async def friendsAction(id: str, action: str, session: AsyncSession = Depends(get_async_session), user: User = Depends(current_user)):
     q = select(User.friends).where(User.id == user.id)
@@ -56,15 +55,15 @@ async def getFriends(id: str, session: AsyncSession = Depends(get_async_session)
     return friends
 
 
-@auth_router.get('/getAvatar/{id}')
-def getAvatar(id: str):
-    return FileResponse(f'storage/avatars/{id}.png')
+# @auth_router.get('/getAvatar/{id}')
+# def getAvatar(id: str):
+#     return FileResponse(f'storage/avatars/{id}.png')
 
-# Need to auth
-@auth_router.post('/setAvatar')
-def setAvatar(avatar: UploadFile, user: User = Depends(current_user)):
-    with open(f'storage/avatars/{user.id}.png', 'wb') as file:
-        file.write(avatar.file.read())
+
+# @auth_router.post('/setAvatar')
+# def setAvatar(avatar: UploadFile, user: User = Depends(current_user)):
+#     upload_file(f'avatars/{user.id}.png', avatar)
+
 
 @auth_router.get('/getUsers')
 async def getUsers(session: AsyncSession = Depends(get_async_session)):

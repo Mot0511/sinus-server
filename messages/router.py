@@ -19,7 +19,7 @@ messages_router = APIRouter(prefix='/messages')
 
 current_user = fastapi_users.current_user()
 
-# Need to auth
+
 @messages_router.websocket('/connect/{username}/{chat_id}')
 async def connect(websocket: WebSocket, chat_id: int, username: str, session: AsyncSession = Depends(get_async_session)):
     await manager.broadcast(get_broadcast_message('in_online', username), chat_id)
@@ -68,7 +68,7 @@ async def connect(websocket: WebSocket, chat_id: int, username: str, session: As
         manager.disconnect(websocket, chat_id)
         await manager.broadcast(get_broadcast_message('in_offline', username), chat_id)
 
-# Need to auth
+
 @messages_router.get('/get/{chat_id}')
 async def getMessages(chat_id: int, session: AsyncSession = Depends(get_async_session)):
     q = select(MessageModel).where(MessageModel.chat == chat_id)
@@ -85,7 +85,7 @@ async def getMessages(chat_id: int, session: AsyncSession = Depends(get_async_se
 
     return new_messages
 
-# Need to auth
+
 @messages_router.get('/getChats/')
 async def getChats(session: AsyncSession = Depends(get_async_session), user: User = Depends(current_user)):
     q = select(Chat).where(or_(Chat.user1 == str(user.id), Chat.user2 == str(user.id)))
@@ -111,7 +111,7 @@ async def getChats(session: AsyncSession = Depends(get_async_session), user: Use
 
     return res
 
-# Need to auth
+
 @messages_router.get('/getChat/{chat_id}')
 async def getChat(chat_id: int, session: AsyncSession = Depends(get_async_session), user: User = Depends(current_user)):
     q = select(Chat).where(and_(Chat.id == chat_id, or_(Chat.user1 == str(user.id), Chat.user2 == str(user.id))))
@@ -120,7 +120,7 @@ async def getChat(chat_id: int, session: AsyncSession = Depends(get_async_sessio
 
     return chat
 
-# Need to auth
+
 @messages_router.post('/addChat/{user_id}')
 async def addChat(user_id: str, session: AsyncSession = Depends(get_async_session), user: User = Depends(current_user)):
     
@@ -144,7 +144,7 @@ async def addChat(user_id: str, session: AsyncSession = Depends(get_async_sessio
 
     return chat_id
 
-# Need to auth
+
 @messages_router.post('/removeChat/{id}')
 async def removeChat(id: int, session: AsyncSession = Depends(get_async_session), user: User = Depends(current_user)):
     q_chat = delete(Chat).where(and_(Chat.id == id, or_(Chat.user1 == str(user.id), Chat.user2 == str(user.id))))

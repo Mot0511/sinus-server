@@ -17,8 +17,8 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     verification_token_secret = SECRET_JWT_WORD
 
     async def on_after_register(self, user: User, request: Request | None = None) -> None:
-        shutil.copyfile('storage/default_avatar.png', f'storage/avatars/{user.id}.png')
-    
+        pass
+
     async def on_after_forgot_password(self, user: User, token: str, request: Request | None = None) -> None:
         email = user.email
 

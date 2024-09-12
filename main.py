@@ -11,7 +11,9 @@ from posts.router import posts_router
 from messages.router import messages_router
 from starlette.middleware.cors import CORSMiddleware
 import logging
+import firebase_admin
 
+fireapp = firebase_admin.initialize_app()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -32,28 +34,6 @@ app.include_router(messages_router, tags=['Messages'])
 @app.get('/')
 def start():
     return 'Server is working'
-
-@app.get('/create_db')
-async def create_db_route():
-    await create_db()
-
-@app.get('/drop_db')
-async def create_db_route():
-    await drop_db()
-
-@app.get('/getlogs')
-def get_logs():
-    return FileResponse('logs.txt')
-
-@app.get('/set_logging')
-def set_logging():
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.INFO)
-    fh = logging.FileHandler("logs.txt")
-    fh.setLevel(logging.INFO)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    fh.setFormatter(formatter)
-    logger.addHandler(fh)
 
 app.add_middleware(
     CORSMiddleware,
