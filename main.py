@@ -13,8 +13,6 @@ from starlette.middleware.cors import CORSMiddleware
 import logging
 import firebase_admin
 
-fireapp = firebase_admin.initialize_app()
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print('Lifespan')
