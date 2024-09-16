@@ -13,16 +13,9 @@ from starlette.middleware.cors import CORSMiddleware
 import logging
 import firebase_admin
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    print('Lifespan')
-    await create_db()
-    yield
-
 # Инициализация приложения
 app = FastAPI(
     title='Sinus Backend',
-    lifespan=lifespan
 )
 
 app.include_router(posts_router, tags=['Posts'])
