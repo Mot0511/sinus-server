@@ -22,7 +22,7 @@ current_user = fastapi_users.current_user()
 
 @messages_router.websocket('/connect/{username}/{chat_id}')
 async def connect(websocket: WebSocket, chat_id: int, username: str, session: AsyncSession = Depends(get_async_session)):
-    await manager.broadcast(get_broadcast_message('in_online', username), chat_id)
+    # await manager.broadcast(get_broadcast_message('in_online', username), chat_id)
     await manager.connect(websocket, chat_id)
 
     try:
@@ -102,8 +102,6 @@ async def getChats(session: AsyncSession = Depends(get_async_session), user: Use
         data = await session.execute(q)
         user = data.scalar()
         users.append(user)
-
-    print(chats)
 
     res = []
     for i in range(len(chats)):
