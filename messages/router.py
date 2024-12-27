@@ -95,13 +95,15 @@ async def getChats(session: AsyncSession = Depends(get_async_session), user: Use
     users = []
     for chat in chats:
         if chat.user1 == str(user.id):
+            print(f'-----------{chat.user1}------------')
             q = select(User).where(User.id == chat.user2)
         else:
+            print(f'-----------{chat.user2}------------')
             q = select(User).where(User.id == chat.user1)
 
         data = await session.execute(q)
-        user = data.scalar()
-        users.append(user)
+        companion = data.scalar()
+        users.append(companion)
 
     res = []
     for i in range(len(chats)):
